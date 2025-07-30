@@ -151,7 +151,7 @@ const emotes = [
   { name: "Snake", id: "emote-snake", duration: 5.262578, is_free: true },
   { name: "Heart Fingers", id: "emote-heartfingers", duration: 4.001974, is_free: true },
   { name: "Heart Shape", id: "emote-heartshape", duration: 6.232394, is_free: false },
-  { name: "Hug", id: "emote-hug", duration: 2, is_free: false },
+  { name: "Hug", id: "emote-hug", duration: 3, is_free: false },
   { name: "Eyeroll", id: "emoji-eyeroll", duration: 3.020264, is_free: false },
   { name: "Embarrassed", id: "emote-embarrassed", duration: 7.414283, is_free: false },
   { name: "Float", id: "emote-float", duration: 8.995302, is_free: true },
@@ -282,7 +282,7 @@ const emoteWords = [
     ],
     id: "emote-hug",
     index: findEmoteIndexById("emote-hug"),
-    duration: 2
+    duration: 3
   },
 ]
 
@@ -386,6 +386,96 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
     }
   }
 
+  // if (msg === 'трусы') {
+  //   const outfit = [
+  //     {
+  //       type: 'clothing',
+  //       amount: 1,
+  //       id: 'body-flesh', // Important
+  //       account_bound: false,
+  //       active_palette: 85
+  //     },
+  //   {
+  //       type: 'clothing',
+  //       amount: 1,
+  //       id: 'hair_front-n_basic2020overshoulderstraight', // Important
+  //       account_bound: false,
+  //       active_palette: 1
+  //     },//hair_front-n_basic2020overshoulderstraight
+  //       {
+  //       type: 'clothing',
+  //       amount: 1,
+  //       id: 'hair_back-n_basic2020overshoulderstraight', // Important
+  //       account_bound: false,
+  //       active_palette: 1
+  //     },
+  //       {
+  //       type: 'clothing',
+  //       amount: 1,
+  //       id: 'hair_back-n_basic2020overshoulderstraight', // Important
+  //       account_bound: false,
+  //       active_palette: 1
+  //     },//eye-n_basic2018femalesquare
+  //       {
+  //       type: 'clothing',
+  //       amount: 1,
+  //       id: "eye-n_basic2018femaleround", // Important
+  //       account_bound: false,
+  //       active_palette: 5
+  //     },
+  //             {
+  //       type: 'clothing',
+  //       amount: 1,
+  //       id: "nose-n_basic2018newnose15", // Important
+  //       account_bound: false,
+  //       active_palette: 1
+  //     },//"mouth-basic2018downturnedthinround"
+  //                   {
+  //       type: 'clothing',
+  //       amount: 1,
+  //       id: "mouth-basic2018downturnedthinround", // Important
+  //       account_bound: false,
+  //       active_palette: 52
+  //     },//"freckle-n_basic2018freckle34"
+  //                         {
+  //       type: 'clothing',
+  //       amount: 1,
+  //       id: "eyebrow-n_basic2018newbrows15", // Important
+  //       account_bound: false,
+  //       active_palette: 1
+  //     },
+  //                               {//"shirt-n_starteritems2019tankblack"
+  //       type: 'clothing',
+  //       amount: 1,
+  //       id: "freckle-n_basic2018freckle34", // Important
+  //       account_bound: false,
+  //       active_palette: 0
+  //     },
+  //                                    {//"pants-n_starteritems2019cuffedjeansblack"
+  //       type: 'clothing',
+  //       amount: 1,
+  //       id: "shirt-n_starteritems2019maletshirtblack", // Important
+  //       account_bound: false,
+  //       active_palette: 0
+  //     },
+  //                                          {//"pants-n_starteritems2019cuffedjeansblack"
+  //       type: 'clothing',
+  //       amount: 1,
+  //       id: "pants-n_room22019undiespink", // Important
+  //       account_bound: false,
+  //       active_palette: 0
+  //     },
+  //                                                {//"pants-n_starteritems2019cuffedjeansblack"
+  //       type: 'clothing',
+  //       amount: 1,
+  //       id: "shoes-n_converse_black", // Important
+  //       account_bound: false,
+  //       active_palette: 0
+  //     },
+  //   ];
+
+  //    bot.outfit.change(outfit).catch(e => console.error(e));
+  // }
 
   if (/^\s*\d+\s*$/.test(msg)) {
     const index = parseInt(msg) - 1;

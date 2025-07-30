@@ -4,7 +4,7 @@
         amount: 1,
         id: 'body-flesh', // Important
         account_bound: false,
-        active_palette: 18
+        active_palette: 85
       },
     {
         type: 'clothing',
