@@ -353,13 +353,6 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
     return
   }
 
-  const hasExclamation = msg.endsWith('!');
-
-  // Удаляем восклицательный знак (если он есть) для поиска
-  const normalizedInput = hasExclamation
-    ? msg.slice(0, -1).trim()
-    : msg.trim();
-
   // Ищем эмоту, где names содержит нормализованный ввод (без учета регистра)
   const foundEmote = emoteWords.find(emote =>
     emote.names.some(name =>
@@ -369,21 +362,10 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
 
   // Если нашли - возвращаем id, duration и флаг восклицательного знака
   if (foundEmote) {
-    if (hasExclamation) {
-      const durationMs = foundEmote.duration * 1000; // переводим в мс
-      const time = Date.now();
-      const nextTime = Math.floor(time / durationMs) * durationMs + durationMs;
-      await new Promise(resolve => setTimeout(resolve, nextTime - Date.now()));
-      await bot.player.emote(user.id, foundEmote.id)
-        .catch(e => console.error('Ошибка воспроизведения эмоции:', e))
-        .then(() => userEmote.set(user.id, { id: foundEmote.index, time: Date.now(), sync: true }))
-      return
-    } else {
       await bot.player.emote(user.id, foundEmote.id)
         .catch(e => console.error('Ошибка воспроизведения эмоции:', e))
         .then(() => userEmote.set(user.id, { id: foundEmote.index, time: Date.now() }))
       return
-    }
   }
 
   if (/^\s*\d+\s*$/.test(msg)) {
