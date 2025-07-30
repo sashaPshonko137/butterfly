@@ -151,7 +151,7 @@ const emotes = [
   { name: "Snake", id: "emote-snake", duration: 5.262578, is_free: true },
   { name: "Heart Fingers", id: "emote-heartfingers", duration: 4.001974, is_free: true },
   { name: "Heart Shape", id: "emote-heartshape", duration: 6.232394, is_free: false },
-  { name: "Hug", id: "emote-hug", duration: 3, is_free: false },
+  { name: "Hug", id: "emote-hug", duration: 2.5, is_free: false },
   { name: "Eyeroll", id: "emoji-eyeroll", duration: 3.020264, is_free: false },
   { name: "Embarrassed", id: "emote-embarrassed", duration: 7.414283, is_free: false },
   { name: "Float", id: "emote-float", duration: 8.995302, is_free: true },
@@ -282,7 +282,7 @@ const emoteWords = [
     ],
     id: "emote-hug",
     index: findEmoteIndexById("emote-hug"),
-    duration: 3
+    duration: 2.5
   },
 ]
 
