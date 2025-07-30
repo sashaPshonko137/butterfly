@@ -340,6 +340,7 @@ const bot = new Highrise({
 });
 
 bot.on("chatCreate", async (user, message) => {
+    if (user.id === '688250795e345dbf6cacf452') return
     const msg = message.toLowerCase();
     await sendMessage(chatID, `${user.username}: ${message}`)
 if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо') {
