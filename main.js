@@ -381,7 +381,7 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
     }
   }
 
-  if (msg.includes('хах' || msg.includes('хпх') || msg.includes('заз') || msg.includes('пхп') || msg.includes('ахаз') || msg.includes('пзвх') || msg.includes('пзах'))) {
+  if (containsAhahs(msg)) {
     if (user.id !== "67f8078652db7b9f7a0e68fb" && user.id !== "67a2b617a337e1b57da53360") return
     let text1 = ''
     let text2 = ''
@@ -430,6 +430,11 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
     return
   }
 });
+
+function containsAhahs(str) {
+  const ahahs = ['хах', "пзах", "пхп", "хпх", 'ахаз', "пзвх"]
+  return ahahs.some(substring => str.includes(substring));
+}
 
 bot.on("messageCreate", async (user_id, data, message) => {
   if (user_id !== "67f8078652db7b9f7a0e68fb" && user_id !== "67a2b617a337e1b57da53360") return
