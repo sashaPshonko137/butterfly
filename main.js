@@ -432,7 +432,7 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
 });
 
 function containsAhahs(str) {
-  const ahahs = ['хах', "пзах", "пхп", "хпх", 'ахаз', "пзвх"]
+  const ahahs = ['хах', "пзах", "пхп", "хпх", 'ахаз', "пзвх", 'ахха']
   return ahahs.some(substring => str.includes(substring));
 }
 
