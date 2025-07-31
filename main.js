@@ -326,15 +326,14 @@ tgBot.on('message', (msg) => {
 
 async function sendMessage(chatId, text) {
   await tgBot.sendMessage(chatId, text)
-    .then(() => console.log('Сообщение отправлено!'))
-    .catch(err => console.error('Ошибка:', err));
+  .catch(err => console.error('Ошибка:', err));
 }
 const chatID = -4945127165
 const token = "d1d1935690ed08537c7246511be9993ab84ff57d870ecdf037462cec3cafc9c7";
 const room = "67f8078652db7b9f7a0e68fb";
 
 const bot = new Highrise({
-  Events: [Events.Messages, Events.Movements, Events.Leaves, Events.DirectMessages, Events.Joins],
+  Events: [Events.Messages, Events.Movements, Events.Leaves, Events.DirectMessages, Events.Joins, Events.DirectMessages],
   AutoFetchMessages: true,
   Cache: true
 });
@@ -507,6 +506,11 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
     bot.player.emote(user.id, 'emote-bow').catch(e => console.error(e));
     return
   }
+});
+
+bot.on("messageCreate", async (user_id, data, message) => {
+  if (user_id !== "67f8078652db7b9f7a0e68fb" && user_id !== "67a2b617a337e1b57da53360") return
+  await bot.message.send(message);
 });
 
 setInterval(async () => {
