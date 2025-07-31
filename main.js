@@ -4,7 +4,6 @@ const fsPromises = require('fs').promises;
 const path = require('path');
 const TelegramBot = require('node-telegram-bot-api');
 
-// Токен бота (получить у @BotFather)
 const TOKEN = '7661666748:AAGAxosjTUvgdfQL62dFFP-wRAxD98Fnt2M'
 const tgBot = new TelegramBot(TOKEN, { polling: true });
 
@@ -317,13 +316,6 @@ setInterval(async () => {
 
 const userEmote = new Map
 
-tgBot.on('message', (msg) => {
-  const chatId = msg.chat.id;
-
-  // Ответ с chatId и текстом пользователя
-  console.log(chatId)
-});
-
 async function sendMessage(chatId, text) {
   await tgBot.sendMessage(chatId, text)
   .catch(err => console.error('Ошибка:', err));
@@ -339,10 +331,14 @@ const bot = new Highrise({
 });
 
 bot.on("chatCreate", async (user, message) => {
-    if (user.id === '688250795e345dbf6cacf452') return
     const msg = message.toLowerCase();
+    if (user.id === '688250795e345dbf6cacf452' && msg.includes('ля ля')) return
     await sendMessage(chatID, `${user.username}: ${message}`)
 if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо') {
+    bot.player.emote(user.id, 'emote-bow').catch(e => console.error(e));
+    return
+  }
+    if (msg === 'пожалуйстa') {
     bot.player.emote(user.id, 'emote-bow').catch(e => console.error(e));
     return
   }
@@ -385,96 +381,28 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
     }
   }
 
-  // if (msg === 'трусы') {
-  //   const outfit = [
-  //     {
-  //       type: 'clothing',
-  //       amount: 1,
-  //       id: 'body-flesh', // Important
-  //       account_bound: false,
-  //       active_palette: 85
-  //     },
-  //   {
-  //       type: 'clothing',
-  //       amount: 1,
-  //       id: 'hair_front-n_basic2020overshoulderstraight', // Important
-  //       account_bound: false,
-  //       active_palette: 1
-  //     },//hair_front-n_basic2020overshoulderstraight
-  //       {
-  //       type: 'clothing',
-  //       amount: 1,
-  //       id: 'hair_back-n_basic2020overshoulderstraight', // Important
-  //       account_bound: false,
-  //       active_palette: 1
-  //     },
-  //       {
-  //       type: 'clothing',
-  //       amount: 1,
-  //       id: 'hair_back-n_basic2020overshoulderstraight', // Important
-  //       account_bound: false,
-  //       active_palette: 1
-  //     },//eye-n_basic2018femalesquare
-  //       {
-  //       type: 'clothing',
-  //       amount: 1,
-  //       id: "eye-n_basic2018femaleround", // Important
-  //       account_bound: false,
-  //       active_palette: 5
-  //     },
-  //             {
-  //       type: 'clothing',
-  //       amount: 1,
-  //       id: "nose-n_basic2018newnose15", // Important
-  //       account_bound: false,
-  //       active_palette: 1
-  //     },//"mouth-basic2018downturnedthinround"
-  //                   {
-  //       type: 'clothing',
-  //       amount: 1,
-  //       id: "mouth-basic2018downturnedthinround", // Important
-  //       account_bound: false,
-  //       active_palette: 52
-  //     },//"freckle-n_basic2018freckle34"
-  //                         {
-  //       type: 'clothing',
-  //       amount: 1,
-  //       id: "eyebrow-n_basic2018newbrows15", // Important
-  //       account_bound: false,
-  //       active_palette: 1
-  //     },
-  //                               {//"shirt-n_starteritems2019tankblack"
-  //       type: 'clothing',
-  //       amount: 1,
-  //       id: "freckle-n_basic2018freckle34", // Important
-  //       account_bound: false,
-  //       active_palette: 0
-  //     },
-  //                                    {//"pants-n_starteritems2019cuffedjeansblack"
-  //       type: 'clothing',
-  //       amount: 1,
-  //       id: "shirt-n_starteritems2019maletshirtblack", // Important
-  //       account_bound: false,
-  //       active_palette: 0
-  //     },
-  //                                          {//"pants-n_starteritems2019cuffedjeansblack"
-  //       type: 'clothing',
-  //       amount: 1,
-  //       id: "pants-n_room22019undiespink", // Important
-  //       account_bound: false,
-  //       active_palette: 0
-  //     },
-  //                                                {//"pants-n_starteritems2019cuffedjeansblack"
-  //       type: 'clothing',
-  //       amount: 1,
-  //       id: "shoes-n_converse_black", // Important
-  //       account_bound: false,
-  //       active_palette: 0
-  //     },
-  //   ];
+  if (msg.includes('хах' || msg.includes('хпх') || msg.includes('заз'))) {
+    if (user.id !== "67f8078652db7b9f7a0e68fb" && user.id !== "67a2b617a337e1b57da53360") return
+    let text1 = ''
+    let text2 = ''
+    if (user.id === "67f8078652db7b9f7a0e68fb") {text1 = 'дашулька'; text2 = 'й раз посмеялась. празднуем🎉🎉🎉'} else {
+      text1 = 'сашулька';
+      text2 = 'й раз посмеялся. празднуем🎉🎉🎉'
+    }
+    const data = await incrementAHAH(user.id)
+    if (!data) return
+    if (data[user.id] % 100 === 0) {
+      await bot.message.send(`\n${text1}, ты ${data[user.id]}${text2}`);
+      for (let j = 0; j < 100; j++) await bot.player.react(user.id, Reactions.Heart).catch(e => console.error(e));
+    }
+  }
 
-  //    bot.outfit.change(outfit).catch(e => console.error(e));
-  // }
+  if (msg === 'стата') {
+    if (user.id !== "67f8078652db7b9f7a0e68fb" && user.id !== "67a2b617a337e1b57da53360") return
+    const rawData = await fsPromises.readFile('ahah.json');
+    const data = JSON.parse(rawData);
+    await bot.message.send(`\nдаша: ${data["67f8078652db7b9f7a0e68fb"]} смешинок\ncаша: ${data["67a2b617a337e1b57da53360"]} смешинок`);
+  }
 
   if (/^\s*\d+\s*$/.test(msg)) {
     const index = parseInt(msg) - 1;
@@ -500,12 +428,6 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
     }
     return
   }
-
-
-  if (msg === 'пожалуйстa') {
-    bot.player.emote(user.id, 'emote-bow').catch(e => console.error(e));
-    return
-  }
 });
 
 bot.on("messageCreate", async (user_id, data, message) => {
@@ -523,16 +445,45 @@ bot.on('ready', (session) => {
 
 bot.on('playerJoin', async (user) => {
 if (user.id === "67f8078652db7b9f7a0e68fb") {
-    bot.message.send(`привет, дашуля <3`);
+    bot.message.send(`\nпривееет, дашуля <3`);
     return
   }
   if (user.id === '67a2b617a337e1b57da53360') {
     await sendMessage(chatID, `саша_пшонко зашёл в комнату`)
-    bot.message.send(`привет, сашуля <3`);
+    bot.message.send(`\nпривееет, сашуля <3`);
     return
   }
     await sendMessage(chatID, `@${user.username} зашёл в комнату`)
-  bot.message.send(`@${user.username} чо надо?`);
+    await bot.message.send(`\n@${user.username} чо надо`);
+    await delay(1000)
+    await bot.message.send(`?`);
 });
+
+async function incrementAHAH(id) {
+  try {
+    // 1. Читаем файл
+    const rawData = await fsPromises.readFile('ahah.json');
+    const data = JSON.parse(rawData);
+
+    // 2. Обновляем значение
+    if (data.hasOwnProperty(id)) {
+      data[id] += 1;
+    } else {
+      throw new Error(`ID ${id} не найден в файле`);
+    }
+
+    // 3. Записываем обратно
+    fs.writeFileSync('ahah.json', JSON.stringify(data, null, 2));
+    return data;
+  } catch (err) {
+    console.error('Ошибка:', err.message);
+    return null;
+  }
+}
+
+async function delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
+}
+
 
 bot.login(token, room);
