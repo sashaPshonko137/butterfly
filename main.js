@@ -441,6 +441,11 @@ bot.on("messageCreate", async (user_id, data, message) => {
   await bot.message.send(message);
 });
 
+bot.on("whisperCreate", async (user, message) => {
+  if (user_id !== "67f8078652db7b9f7a0e68fb" && user_id !== "67a2b617a337e1b57da53360") return
+  await bot.message.send(message);
+});
+
 setInterval(async () => {
     await bot.player.emote('688250795e345dbf6cacf452', "emote-ghost-idle")
 }, 18500)
