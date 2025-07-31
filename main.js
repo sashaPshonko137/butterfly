@@ -442,7 +442,7 @@ bot.on("messageCreate", async (user_id, data, message) => {
 });
 
 bot.on("whisperCreate", async (user, message) => {
-  if (user.id !== "67f8078652db7b9f7a0e68fb" && user_id !== "67a2b617a337e1b57da53360") return
+  if (user.id !== "67f8078652db7b9f7a0e68fb" && user.id !== "67a2b617a337e1b57da53360") return
   await bot.message.send(message);
 });
 
