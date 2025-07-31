@@ -398,7 +398,7 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
     return
   }
 
-  if (msg === 'стата' || msg === 'ой' || msg === 'ой!') {
+  if (msg === 'стата') {
     if (user.id !== "67f8078652db7b9f7a0e68fb" && user.id !== "67a2b617a337e1b57da53360") return
     const rawData = await fsPromises.readFile('ahah.json');
     const data = JSON.parse(rawData);
