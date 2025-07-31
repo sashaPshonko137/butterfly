@@ -395,6 +395,7 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
       await bot.message.send(`\n${text1}, ты ${data[user.id]}${text2}`);
       for (let j = 0; j < 100; j++) await bot.player.react(user.id, Reactions.Heart).catch(e => console.error(e));
     }
+    return
   }
 
   if (msg === 'стата') {
