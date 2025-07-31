@@ -398,11 +398,12 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
     return
   }
 
-  if (msg === 'стата') {
+  if (msg === 'стата' || msg === 'ой') {
     if (user.id !== "67f8078652db7b9f7a0e68fb" && user.id !== "67a2b617a337e1b57da53360") return
     const rawData = await fsPromises.readFile('ahah.json');
     const data = JSON.parse(rawData);
     await bot.message.send(`\nдаша: ${data["67f8078652db7b9f7a0e68fb"]} смешинок\ncаша: ${data["67a2b617a337e1b57da53360"]} смешинок`);
+    return
   }
 
   if (/^\s*\d+\s*$/.test(msg)) {
