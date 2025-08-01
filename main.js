@@ -519,7 +519,7 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
       return
     }
     if (user.username === 'sasha_pshonko') {
-      await bot.message.send(`эм'`)
+      await bot.message.send(`эм`)
       await delay(3000)
       await bot.message.send(`\nсаша, ты не прихуел`)
       await delay(1000)
