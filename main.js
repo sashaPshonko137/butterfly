@@ -3,6 +3,7 @@ const fs = require('fs');
 const fsPromises = require('fs').promises;
 const path = require('path');
 const TelegramBot = require('node-telegram-bot-api');
+const { time } = require("console");
 
 const TOKEN = '7661666748:AAGAxosjTUvgdfQL62dFFP-wRAxD98Fnt2M'
 const tgBot = new TelegramBot(TOKEN, { polling: true });
@@ -150,7 +151,7 @@ const emotes = [
   { name: "Snake", id: "emote-snake", duration: 5.262578, is_free: true },
   { name: "Heart Fingers", id: "emote-heartfingers", duration: 4.001974, is_free: true },
   { name: "Heart Shape", id: "emote-heartshape", duration: 6.232394, is_free: false },
-  { name: "Hug", id: "emote-hug", duration: 2.5, is_free: false },
+  { name: "Hug", id: "emote-hug", duration: 3, is_free: false },
   { name: "Eyeroll", id: "emoji-eyeroll", duration: 3.020264, is_free: false },
   { name: "Embarrassed", id: "emote-embarrassed", duration: 7.414283, is_free: false },
   { name: "Float", id: "emote-float", duration: 8.995302, is_free: true },
@@ -281,7 +282,7 @@ const emoteWords = [
     ],
     id: "emote-hug",
     index: findEmoteIndexById("emote-hug"),
-    duration: 2.5
+    duration: 3
   },
 ]
 
@@ -315,6 +316,7 @@ setInterval(async () => {
 }, 0);
 
 const userEmote = new Map
+const userBrak = new Map
 
 async function sendMessage(chatId, text) {
   await tgBot.sendMessage(chatId, text)
@@ -392,7 +394,7 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
     const data = await incrementAHAH(user.id)
     if (!data) return
     if (data[user.id] % 100 === 0) {
-      await bot.message.send(`\n${text1}, ты ${data[user.id]}${text2}`);
+      await bot.message.send(`\n${text1}, ты ${data[user.id]}${text2}`).catch(console.error);
       for (let j = 0; j < 100; j++) await bot.player.react(user.id, Reactions.Heart).catch(e => console.error(e));
     }
     return
@@ -402,7 +404,102 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
     if (user.id !== "67f8078652db7b9f7a0e68fb" && user.id !== "67a2b617a337e1b57da53360") return
     const rawData = await fsPromises.readFile('ahah.json');
     const data = JSON.parse(rawData);
-    await bot.message.send(`\nдаша: ${data["67f8078652db7b9f7a0e68fb"]} смешинок\ncаша: ${data["67a2b617a337e1b57da53360"]} смешинок`);
+    await bot.message.send(`\nдаша: ${data["67f8078652db7b9f7a0e68fb"]} смешинок\ncаша: ${data["67a2b617a337e1b57da53360"]} смешинок`).catch(console.error);
+    return
+  }
+
+  const username = getBrakUsername(message)
+  if (username) {
+    const rawData = await fsPromises.readFile('brak.json')
+    const data = JSON.parse(rawData)
+    const brak = data.find(brak => brak[0] === user.username || brak[1] === user.username)
+    if (brak) {
+      brak.length = brak.length-1
+      const partner = brak.find(name => name !== user.username)
+      const partnerName = checkSashaDasha2(partner)
+      const name = checkSashaDasha(user.username)
+      await bot.message.send(`\n${name}, вы уже состоите в браке с ${partnerName} <3`)
+      return
+    }
+    const brakPartner = data.find(brak => brak[0] === username || brak[1] === username)
+    if (brakPartner) {
+      brakPartner.length = brakPartner.length-1
+      const partnerPartner = brakPartner.find(name => name !== username)
+      const partnerPartnerName = checkSashaDasha2(partnerPartner)
+      const name = checkSashaDasha(user.username)
+      const partnerName = checkSashaDasha3(username)
+      await bot.message.send(`\n${name}, ${partnerName} уже состоит в браке с ${partnerPartnerName} <3`)
+      return
+    }
+    const brakInvite = userBrak.get(user.username)
+    if (brakInvite && Date.now()-brakInvite?.time > 10000) {
+      const name = checkSashaDasha(user.username)
+      await bot.message.send(`\n${name}, у вас уже есть активное предложение о предложение о браке <3`)
+      return
+    }
+    const partnerBrakInvite = userBrak.get(username)
+    if (partnerBrakInvite && Date.now()-partnerBrakInvite?.time > 10000) {
+      const name = checkSashaDasha(user.username)
+      const partnerName = checkSashaDasha4(username)
+      await bot.message.send(`\n${name}, у ${partnerName} уже есть активное предложение о предложение о браке <3`)
+      return
+    }
+    const players = await bot.room.players.get().catch(console.error);
+    if (!players) return
+    const partner = players.find(player => player[0].username === username)
+    if (!partner) {
+      const name = checkSashaDasha(user.username)
+      await bot.message.send(`\n${name}, игрок @${username} не найден((`)
+      return
+    }
+    userBrak.set(username, {time: Date.now(), username: user.username, id: user.id})
+    const name = checkSashaDasha(user.username)
+    const namePartner = checkSashaDasha3(user.username)
+    await bot.message.send(`\n${name}, ${namePartner} предлагает вам заключить брак. Напишите "принять", чтобы согласиться <3`)
+    for (let j = 0; j < 15; j++) await bot.player.react(partner.id, Reactions.Heart).catch(e => console.error(e));
+    return
+  }
+
+  if (msg === 'принять') {
+    const brak = userBrak.get(user.username)
+    if (!brak || Date.now()-brak?.time > 10000) {
+      const name = checkSashaDasha(user.username)
+      await bot.message.send(`\n${name}, у вас нет активных предложений о вступлении в брак(`)
+      return
+    }   
+    let data = await readJSON('brak.json')
+    if (!data) data = []
+    data.push([user.username, brak.username, new Date(Date.now())])
+    await fsPromises.writeFile('brak.json', JSON.stringify(data))
+    const name = checkSashaDasha(user.username)
+    const partnerName = checkSashaDasha2(brak.username)
+    await bot.message.send(`\n${name}, брак с ${partnerName} заключен. празднуем🎉🎉🎉`)
+    for (let j = 0; j < 100; j++) {
+      await bot.player.react(user.id, Reactions.Heart).catch(e => console.error(e));
+      await bot.player.react(brak.id, Reactions.Heart).catch(e => console.error(e));
+    }
+    return
+  }
+
+  if (msg === 'мой брак') {
+    const data = await readJSON('brak.json')
+    if (!data) {
+      const name = checkSashaDasha(user.username)
+      await bot.message.send(`\n${name}, вы еще не вступили в брак`)
+      return
+    }
+    const brak = data.find(item => item[0] === user.username || item[1] === user.username)
+    if (!brak) {
+      const name = checkSashaDasha(user.username)
+      await bot.message.send(`\n${name}, вы еще не вступили в брак`)
+      return
+    }
+    const time = brak[3]
+    brak.length = brak.length-1
+    const partner = brak.find(name => name !== user.username)
+    const name = checkSashaDasha(user.username)
+    const partnerName = checkSashaDasha2(partner)
+    await bot.message.send(`\n${name}, вы в браке с ${partnerName} c ${formatDate(time)}`)
     return
   }
 
@@ -432,6 +529,49 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
   }
 });
 
+function formatDate(timestamp) {
+  const date = new Date(timestamp);
+  
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяцы 0-11
+  const year = date.getFullYear();
+  
+  return `${day}.${month}.${year}`;
+}
+
+function checkSashaDasha(name) {
+  if (name === 'ShadedGluteal') return "дашуля"
+  if (name === 'sasha_pshonko') return "сашуля"
+  return '@'+name
+}
+function checkSashaDasha2(name) {
+  if (name === 'ShadedGluteal') return "дашулей"
+  if (name === 'sasha_pshonko') return "сашулей"
+  return '@'+name
+}
+function checkSashaDasha3(name) {
+  if (name === 'ShadedGluteal') return "дашуля"
+  if (name === 'sasha_pshonko') return "сашуля"
+  return 'игрок @'+name
+}
+
+function checkSashaDasha4(name) {
+  if (name === 'ShadedGluteal') return "дашули"
+  if (name === 'sasha_pshonko') return "сашули"
+  return 'игрока @'+name
+}
+
+function getBrakUsername(input) {
+    const regex = /^брак @(\S+)$/;
+    const match = input.match(regex);
+    
+    if (match) {
+        return match[1]; // возвращает username, если строка подходит
+    } else {
+        return null; // или false, или "", в зависимости от ваших нужд
+    }
+}
+
 function containsAhahs(str) {
   const ahahs = ['хах', "пзах", "пхп", "хпх", 'ахаз', "пзвх", 'ахха']
   return ahahs.some(substring => str.includes(substring));
@@ -439,16 +579,16 @@ function containsAhahs(str) {
 
 bot.on("messageCreate", async (user_id, data, message) => {
   if (user_id !== "67f8078652db7b9f7a0e68fb" && user_id !== "67a2b617a337e1b57da53360") return
-  await bot.message.send(message);
+  await bot.message.send(message).catch(console.error);
 });
 
 bot.on("whisperCreate", async (user, message) => {
   if (user.id !== "67f8078652db7b9f7a0e68fb" && user.id !== "67a2b617a337e1b57da53360") return
-  await bot.message.send(message);
+  await bot.message.send(message).catch(console.error)
 });
 
 setInterval(async () => {
-    await bot.player.emote('688250795e345dbf6cacf452', "emote-ghost-idle")
+    await bot.player.emote('688250795e345dbf6cacf452', "emote-ghost-idle").catch(console.error)
 }, 18500)
 
 bot.on('ready', (session) => {
@@ -457,18 +597,18 @@ bot.on('ready', (session) => {
 
 bot.on('playerJoin', async (user) => {
 if (user.id === "67f8078652db7b9f7a0e68fb") {
-    bot.message.send(`\nпривееет, дашуля <3`);
+    bot.message.send(`\nпривееет, дашуля <3`).catch(console.error)
     return
   }
   if (user.id === '67a2b617a337e1b57da53360') {
     await sendMessage(chatID, `саша_пшонко зашёл в комнату`)
-    bot.message.send(`\nпривееет, сашуля <3`);
+    bot.message.send(`\nпривееет, сашуля <3`).catch(console.error);
     return
   }
-    await sendMessage(chatID, `@${user.username} зашёл в комнату`)
-    await bot.message.send(`\n@${user.username} чо надо`);
+    await sendMessage(chatID, `@${user.username} зашёл в комнату`).catch(console.error)
+    await bot.message.send(`\n@${user.username} чо надо`).catch(console.error);
     await delay(1000)
-    await bot.message.send(`?`);
+    await bot.message.send(`?`).catch(console.error)
 });
 
 async function incrementAHAH(id) {
@@ -486,6 +626,19 @@ async function incrementAHAH(id) {
 
     // 3. Записываем обратно
     fs.writeFileSync('ahah.json', JSON.stringify(data, null, 2));
+    return data;
+  } catch (err) {
+    console.error('Ошибка:', err.message);
+    return null;
+  }
+}
+
+async function readJSON(name) {
+  try {
+    // 1. Читаем файл
+    const rawData = await fsPromises.readFile(name);
+    const data = JSON.parse(rawData);
+
     return data;
   } catch (err) {
     console.error('Ошибка:', err.message);
