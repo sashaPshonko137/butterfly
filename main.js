@@ -317,6 +317,7 @@ setInterval(async () => {
 
 const userEmote = new Map
 const userBrak = new Map
+const userRazvod = new Map
 
 async function sendMessage(chatId, text) {
   await tgBot.sendMessage(chatId, text)
@@ -455,7 +456,7 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
     userBrak.set(username, {time: Date.now(), username: user.username, id: user.id})
     const name = checkSashaDasha(user.username)
     const namePartner = checkSashaDasha3(user.username)
-    await bot.message.send(`\n${name}, ${namePartner} предлагает вам заключить брак. Напишите "принять", чтобы согласиться <3`)
+    await bot.message.send(`\n${name}, ${namePartner} предлагает вам заключить брак. Напишите ПРИНЯТЬ, чтобы согласиться <3`)
     for (let j = 0; j < 15; j++) await bot.player.react(partner.id, Reactions.Heart).catch(e => console.error(e));
     return
   }
@@ -478,6 +479,7 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
       await bot.player.react(user.id, Reactions.Heart).catch(e => console.error(e));
       await bot.player.react(brak.id, Reactions.Heart).catch(e => console.error(e));
     }
+    userBrak.delete(user.username)
     return
   }
 
@@ -500,6 +502,61 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
     const name = checkSashaDasha(user.username)
     const partnerName = checkSashaDasha2(partner)
     await bot.message.send(`\n${name}, вы в браке с ${partnerName} c ${formatDate(time)}`)
+    return
+  }
+
+  if (msg === 'развод') {
+    const data = await readJSON('brak.json')
+      if (!data) {
+      const name = checkSashaDasha(user.username)
+      await bot.message.send(`\n${name}, вы еще не вступили в брак`)
+      return
+    }
+    const brak = data.find(item => item[0] === user.username || item[1] === user.username)
+    if (!brak) {
+      const name = checkSashaDasha(user.username)
+      await bot.message.send(`\n${name}, вы еще не вступили в брак`)
+      return
+    }
+    if (user.username === 'sasha_pshonko') {
+      await bot.message.send(`эм'`)
+      await delay(3000)
+      await bot.message.send(`\nсаша, ты не прихуел`)
+      await delay(1000)
+      await bot.message.send(`?`)
+      return
+    }
+    userRazvod.set(user.username, Date.now())
+    const name = checkSashaDasha(user.username)
+    await bot.message.send(`\n${name}, напишите ПОДТВЕРДИТЬ, чтобы развестись`)
+    return
+  }
+
+  if (msg === 'подтвердить') {
+      const data = await readJSON('brak.json')
+      if (!data) {
+      const name = checkSashaDasha(user.username)
+      await bot.message.send(`\n${name}, вы не в браке`)
+      return
+    }
+    const brak = data.find(item => item[0] === user.username || item[1] === user.username)
+    if (!brak) {
+      const name = checkSashaDasha(user.username)
+      await bot.message.send(`\n${name}, вы еще не вступили в брак`)
+      return
+    }
+    const razvodZayavka = userRazvod.get(user.username)
+    if (!razvodZayavka || Date.now()-razvodZayavka > 20000) {
+      const name = checkSashaDasha(user.username)
+      await bot.message.send(`\n${name}, у вас нет активных заявок на развод`)
+      return
+    }
+    new data = data.filter((item) => item[0] === user.username || item[1] === user.username)
+    const name = checkSashaDasha(user.username)
+    await bot.message.send(`\n${name}, вы больше не состоите в браке`)
+    await bot.player.react(user.id, Reactions.Heart).catch(e => console.error(e));
+    await fsPromises.writeFile('brak.json', JSON.stringify(data))
+    userRazvod.delete(user.username)
     return
   }
 
