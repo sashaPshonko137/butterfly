@@ -554,7 +554,7 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
     const newData = data.filter((item) => item[0] === user.username || item[1] === user.username)
     const name = checkSashaDasha(user.username)
     await bot.message.send(`\n${name}, вы больше не состоите в браке`)
-    await bot.player.react(user.id, Reactions.Heart).catch(e => console.error(e));
+    await bot.player.react(user.id, Reactions.Clap).catch(e => console.error(e));
     await fsPromises.writeFile('brak.json', JSON.stringify(newData))
     userRazvod.delete(user.username)
     return
