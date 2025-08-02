@@ -455,10 +455,10 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
       return
     }
     userBrak.set(username, {time: Date.now(), username: user.username, id: user.id})
-    const name = checkSashaDasha(user.username)
+    const name = checkSashaDasha(username)
     const namePartner = checkSashaDasha3(user.username)
     await bot.message.send(`\n${name}, ${namePartner} предлагает вам заключить брак. Напишите ПРИНЯТЬ, чтобы согласиться <3`)
-    for (let j = 0; j < 15; j++) await bot.player.react(partner.id, Reactions.Heart).catch(e => console.error(e));
+    for (let j = 0; j < 15; j++) await bot.player.react(partner[0].id, Reactions.Heart).catch(e => console.error(e));
     return
   }
 
