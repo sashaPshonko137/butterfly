@@ -729,13 +729,13 @@ function checkSashaDasha4(name) {
 }
 
 function getBrakUsername(input) {
-    const regex = /^брак @(\S+)$/;
+    const regex = /^брак @(\S+)\s*$/; // Добавил \s* для учета пробелов в конце
     const match = input.match(regex);
     
     if (match) {
-        return match[1]; // возвращает username, если строка подходит
+        return match[1].trim(); // Удаляем пробелы в начале и конце
     } else {
-        return null; // или false, или "", в зависимости от ваших нужд
+        return null;
     }
 }
 
