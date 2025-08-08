@@ -4,6 +4,7 @@ const fsPromises = require('fs').promises;
 const path = require('path');
 const TelegramBot = require('node-telegram-bot-api');
 const { time } = require("console");
+const { GoldBars } = require("highrise.sdk.dev/src/utils/Util");
 
 const TOKEN = '7661666748:AAGAxosjTUvgdfQL62dFFP-wRAxD98Fnt2M'
 const tgBot = new TelegramBot(TOKEN, { polling: true });
@@ -208,7 +209,7 @@ const emotes = [
   { name: "Air Guitar", id: "idle-guitar", duration: 13.229398, is_free: true },
   { name: "This Is For You", id: "emote-gift", duration: 5.8, is_free: true },
   { name: "Push it", id: "dance-employee", duration: 8, is_free: true },
-  { name: "Sweet Smooch", id: "emote-kissing", duration: 5, is_free: false },
+  { name: "Sweet Smooch", id: "emote-kissing", duration: 6, is_free: false },
   { name: "Wop Dance", id: "dance-tiktok11", duration: 11, is_free: true },
   { name: "Cute Salute", id: "emote-cutesalute", duration: 3, is_free: true },
   { name: "At Attention", id: "emote-salute", duration: 3, is_free: true },
@@ -242,7 +243,7 @@ const emoteWords = [
     ],
     id: "emote-kissing",
     index: findEmoteIndexById("emote-kissing"),
-    duration: 5
+    duration: 6
   },
   {
     names: [
@@ -329,16 +330,30 @@ const token = "d1d1935690ed08537c7246511be9993ab84ff57d870ecdf037462cec3cafc9c7"
 const room = "67f8078652db7b9f7a0e68fb";
 
 const bot = new Highrise({
-  Events: [Events.Messages, Events.Movements, Events.Leaves, Events.DirectMessages, Events.Joins, Events.DirectMessages],
-  AutoFetchMessages: true,
-  Cache: true
+  Events: [Events.Messages, Events.Movements, Events.Leaves, Events.DirectMessages, Events.Joins, Events.DirectMessages, Events.Tips],
+  Cache: false
 });
 
+bot.on("playerTip", async (sender, receiver, tip) => {
+  const balance = await bot.wallet.gold.get().catch(console.error)
+  await bot.message.send(`баланс - ${balance}`).catch(e => console.error(e));
+  return
+})
+
 bot.on("chatCreate", async (user, message) => {
+
     const msg = message.toLowerCase();
     if (user.id === '688250795e345dbf6cacf452' && msg.includes('ля ля')) return
     await sendMessage(chatID, `${user.username}: ${message}`)
-if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо') {
+  if (msg === 'верх' || msg === 'вверх') {
+    await bot.player.teleport(user.id, 7.5, 6, 3.5, Facing.FrontLeft).catch(console.error);
+    return
+  }
+  if (msg === 'низ' || msg === 'вниз' || msg === 'в низ') {
+    await bot.player.teleport(user.id, 3, 0, 3, Facing.FrontLeft).catch(console.error);
+    return
+  }
+  if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо') {
     bot.player.emote(user.id, 'emote-bow').catch(e => console.error(e));
     return
   }
@@ -557,7 +572,7 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
     }
     const newData = data.filter((item) => item[0] === user.username || item[1] === user.username)
     const name = checkSashaDasha(user.username)
-    await bot.message.send(`\n${name}, вы больше не состоите в браке`)
+    await bot.message.send(`\n${name}, вы больше не состоите в браке`).catch(e => console.error(e));
     await bot.player.react(user.id, Reactions.Clap).catch(e => console.error(e));
     await fsPromises.writeFile('brak.json', JSON.stringify(newData))
     userRazvod.delete(user.username)
@@ -588,7 +603,98 @@ if (msg === 'cпасибо' || msg === 'спаcибо' || msg === 'cпаcибо'
     }
     return
   }
+      if (user.id !== "67f8078652db7b9f7a0e68fb" && user.id !== "67a2b617a337e1b57da53360") return
+    if (msg === 'баланс' || msg === 'бал') {
+        const balance = await bot.wallet.gold.get().catch(console.error)
+         await bot.message.send(`баланс - ${balance}`).catch(e => console.error(e));
+        return
+    }
+
+          const price = extractNumberFromString(msg)
+  if (price !== 0) {
+    try {
+        const balance = await bot.wallet.gold.get().catch(console.error);
+        console.log('Current balance:', balance);
+        
+        if (!balance) {
+            console.error('Failed to get balance');
+            return;
+        }
+
+        const players = await bot.room.players.get().catch(console.error);
+        if (!players || !players.length) {
+            console.error('No players found');
+            return;
+        }
+
+        const playerIDs = players.map(item => item[0].id);
+        const totalPlayers = playerIDs.length;
+
+        // Проверка баланса и отправка чаевых
+        let barType, requiredAmount;
+        
+        switch(price) {
+            case 1:
+                barType = GoldBars.BAR_1;
+                requiredAmount = totalPlayers * 2;
+                break;
+            case 5:
+                barType = GoldBars.BAR_5;
+                requiredAmount = totalPlayers * 6;
+                break;
+            case 10:
+                barType = GoldBars.BAR_10;
+                requiredAmount = totalPlayers * 11;
+                break;
+            default:
+                console.error('Invalid price value');
+                return;
+        }
+
+        if (balance < requiredAmount) {
+            await bot.message.send(`Не хватает золота! Баланс: ${balance}, требуется: ${requiredAmount}`).catch(console.error);
+            return;
+        }
+
+        // Отправка чаевых всем игрокам
+let successCount = 0;
+let failedCount = 0;
+
+for (const id of playerIDs) {
+        if (user.id === "67f8078652db7b9f7a0e68fb" || user.id === "67a2b617a337e1b57da53360" || user.id === bot.info.user.id) continue
+    try {
+        await bot.player.tip(id, barType);
+        console.log(`Sent tip to ${id}`);
+        successCount++;
+    } catch (error) {
+        console.error(`Failed to tip player ${id}:`, error);
+        failedCount++;
+    }
+}
+
+    } catch (error) {
+        console.error('Error in tipping process:', error);
+    }
+}
 });
+
+function extractNumberFromString(inputString) {
+    try {
+        // Проверяем что это строка и не пустая
+        if (typeof inputString !== 'string' || inputString.trim() === '') return 0;
+
+        // Строгая проверка формата "тип 123"
+        const match = inputString.match(/^тип\s(\d+)$/);
+        if (!match) return 0;
+
+        // Парсим число
+        const number = parseInt(match[1], 10);
+        return isNaN(number) ? 0 : number;
+
+    } catch {
+        return 0;
+    }
+}
 
 function formatDate(timestamp) {
   const date = new Date(timestamp);

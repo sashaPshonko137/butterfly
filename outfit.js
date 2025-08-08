@@ -1,4 +1,4 @@
-    const outfit = [
+      const outfit = [
       {
         type: 'clothing',
         amount: 1,
@@ -30,7 +30,7 @@
         {
         type: 'clothing',
         amount: 1,
-        id: "eye-n_basic2018femaleround", // Important
+        id: "eye-n_animecollection2018bishoneneyes", // Important
         account_bound: false,
         active_palette: 5
       },
@@ -65,14 +65,14 @@
                                      {//"pants-n_starteritems2019cuffedjeansblack"
         type: 'clothing',
         amount: 1,
-        id: "shirt-n_starteritems2019maletshirtblack", // Important
+        id: "shirt-n_room22019bratoppink", // Important
         account_bound: false,
         active_palette: 0
       },
                                            {//"pants-n_starteritems2019cuffedjeansblack"
         type: 'clothing',
         amount: 1,
-        id: "pants-n_starteritems2019cuffedjeansblack", // Important
+        id: "pants-n_room22019undiespink", // Important
         account_bound: false,
         active_palette: 0
       },
