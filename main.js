@@ -346,7 +346,7 @@ bot.on("chatCreate", async (user, message) => {
     if (user.id === '688250795e345dbf6cacf452' && msg.includes('ля ля')) return
     await sendMessage(chatID, `${user.username}: ${message}`)
   if (msg === 'верх' || msg === 'вверх') {
-    await bot.player.teleport(user.id, 7.5, 6, 3.5, Facing.FrontLeft).catch(console.error);
+    await bot.player.teleport(user.id, 4.5, 6, 0.5, Facing.FrontLeft).catch(console.error);
     return
   }
   if (msg === 'низ' || msg === 'вниз' || msg === 'в низ') {
