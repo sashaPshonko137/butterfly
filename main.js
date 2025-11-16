@@ -333,7 +333,7 @@ async function sendMessage(chatId, text) {
   await tgBot.sendMessage(chatId, text)
   .catch(err => console.error('Ошибка:', err));
 }
-const chatID = -4945127165
+const chatID = --5082109157
 const token = "d1d1935690ed08537c7246511be9993ab84ff57d870ecdf037462cec3cafc9c7";
 const room = "67f8078652db7b9f7a0e68fb";
 
