@@ -285,6 +285,14 @@ const emoteWords = [
     index: findEmoteIndexById("emote-hug"),
     duration: 3
   },
+      {
+    names: [
+      'attentive', 'аттентив'
+    ],
+    id: "idle_layingdown",
+    index: findEmoteIndexById("idle_layingdown"),
+    duration: 23
+  },
 ]
 
 setInterval(async () => {
@@ -751,8 +759,57 @@ bot.on("messageCreate", async (user_id, data, message) => {
 
 bot.on("whisperCreate", async (user, message) => {
   if (user.id !== "67f8078652db7b9f7a0e68fb" && user.id !== "67a2b617a337e1b57da53360") return
+   const usData = parseUserAction(message)
+    if (usData) {
+        const players = await bot.room.players.get().catch(console.error);
+        if (!players) return
+        const partner = players.find(player => player[0].username === usData.username)
+        if (!partner) {
+            return
+        }
+        const id = partner[0].id
+        switch(usData.action) {
+            case 'кик':
+                await bot.player.kick(id).catch(e => console.error(e));
+            case 'бан':
+                await bot.player.ban(id, 3200).catch(e => console.error(e));
+            case 'модер':
+                await bot.player.moderator.add(id).catch(e => console.error(e));
+            case 'диз':
+                await bot.player.designer.add(id).catch(e => console.error(e));
+            case 'немодер':
+                await bot.player.moderator.remove(id).catch(e => console.error(e));
+            case 'недиз':
+                await bot.player.designer.remove(id).catch(e => console.error(e));
+            case 'войс':
+                await bot.player.voice.add(id).catch(e => console.error(e));
+            case 'невойс':
+                await bot.player.voice.remove(user.id).catch(e => console.error(e));
+
+        }
+        return
+    }
+
+
+
   await bot.message.send(message).catch(console.error)
 });
+
+function parseUserAction(inputString) {
+    // Удаляем пробелы в начале и конце, затем разбиваем по пробелам
+    const trimmedInput = inputString.trim();
+    const [action, ...rest] = trimmedInput.split(/\s+/);
+    
+    if (!action || rest.length === 0) {
+        return null
+    }
+
+    // Объединяем остаток, удаляем @ и пробелы в имени пользователя
+    const username = rest.join(' ').replace(/^@/, '').trim();
+
+    return { action, username };
+}
+
 
 setInterval(async () => {
     await bot.player.emote('688250795e345dbf6cacf452', "emote-ghost-idle").catch(console.error)
